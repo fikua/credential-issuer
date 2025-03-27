@@ -10,7 +10,7 @@ class IssuerApplicationTests {
 
 	@Test
 	void contextLoads() {
-		// Empty test to check if the application context loads successfully
+		IssuerApplication.main(new String[]{});
 	}
 
 }
