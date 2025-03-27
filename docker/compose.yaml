@@ -1,0 +1,37 @@
+services:
+
+  issuer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: issuer
+    environment:
+      PROFILE: docker
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: fikua
+    ports:
+      - "8080:8080"
+    depends_on:
+      psql-issuer:
+        condition: service_healthy
+
+  psql-issuer:
+    image: postgres:17.3-alpine
+    container_name: psql-issuer
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: fikua
+    volumes:
+      - psql-pv:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  psql-pv:
