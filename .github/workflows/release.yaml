@@ -47,19 +47,21 @@ jobs:
             echo "No existing release with tag v$VERSION found. Proceeding with build."
           fi
 
+      - name: Get Project Name
+        run: echo "PROJECT_NAME=$(./gradlew -q properties | grep '^name:' | awk '{print \$2}')" >> $GITHUB_ENV
+
       - name: Build and Push docker image
         run: |
-          PROJECT_NAME=$(./gradlew -q printProjectName)
-          IMAGE_TAG="$PROJECT_NAME:v$VERSION$SUFFIX"
-          docker build --file Dockerfile --build-arg SKIP_TESTS=true --tag $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker push $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG
-        env:
-          VERSION: ${{ env.VERSION }}
-          SUFFIX: -snapshot
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
-          DOCKER_HUB_CLIENT_NAME: fikua
+            IMAGE_TAG="$PROJECT_NAME:v$VERSION$SUFFIX"
+            docker build --file Dockerfile --build-arg SKIP_TESTS=true --tag $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+            docker push $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG
+          env:
+            VERSION: ${{ env.VERSION }}
+            SUFFIX: -snapshot
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+            DOCKER_HUB_CLIENT_NAME: fikua
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -96,9 +98,11 @@ jobs:
             echo "No existing release with tag v$VERSION found. Proceeding with build."
           fi
 
+      - name: Get Project Name
+        run: echo "PROJECT_NAME=$(./gradlew -q properties | grep '^name:' | awk '{print \$2}')" >> $GITHUB_ENV
+
       - name: Build and Push docker image
         run: |
-          PROJECT_NAME=$(./gradlew -q printProjectName)
           IMAGE_TAG="$PROJECT_NAME:v$VERSION"
           docker build --file Dockerfile --build-arg SKIP_TESTS=true --tag $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
