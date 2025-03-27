@@ -82,7 +82,7 @@ jobs:
 
       - name: Get Project Version
         id: get_version
-        run: echo "VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
+        run: echo "VERSION=$(./gradlew properties -q | grep "^version:" | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Check for existing release tag (only on PR)
         if: github.event_name == 'pull_request'
