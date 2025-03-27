@@ -52,10 +52,10 @@ jobs:
 
       - name: Build and Push docker image
         run: |
-            IMAGE_TAG="$PROJECT_NAME:v$VERSION$SUFFIX"
-            docker build --file /docker/Dockerfile --build-arg SKIP_TESTS=true --tag $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
-            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-            docker push $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG
+          IMAGE_TAG="$PROJECT_NAME:v$VERSION$SUFFIX"
+          docker build -f docker/Dockerfile --build-arg SKIP_TESTS=true -t $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG
         env:
           VERSION: ${{ env.VERSION }}
           SUFFIX: -snapshot
@@ -103,8 +103,8 @@ jobs:
 
       - name: Build and Push docker image
         run: |
-          IMAGE_TAG="$PROJECT_NAME:v$VERSION"
-          docker build --file /docker/Dockerfile --build-arg SKIP_TESTS=true --tag $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
+          IMAGE_TAG="$PROJECT_NAME:v$VERSION$SUFFIX"
+          docker build -f docker/Dockerfile --build-arg SKIP_TESTS=true -t $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG .
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push $DOCKER_HUB_CLIENT_NAME/$IMAGE_TAG
         env:
