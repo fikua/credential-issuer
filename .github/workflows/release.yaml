@@ -48,7 +48,7 @@ jobs:
           fi
 
       - name: Get Project Name
-        run: echo "PROJECT_NAME=$(./gradlew -q properties | grep '^name:' | awk '{print \$2}')" >> $GITHUB_ENV
+        run: echo "PROJECT_NAME=$(./gradlew -q properties | grep '^name:' | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Build and Push docker image
         run: |
@@ -99,7 +99,7 @@ jobs:
           fi
 
       - name: Get Project Name
-        run: echo "PROJECT_NAME=$(./gradlew -q properties | grep '^name:' | awk '{print \$2}')" >> $GITHUB_ENV
+        run: echo "PROJECT_NAME=$(./gradlew -q properties | grep '^name:' | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Build and Push docker image
         run: |
